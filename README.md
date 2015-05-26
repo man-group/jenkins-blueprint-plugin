@@ -5,9 +5,23 @@ the repo itself.
 
 Inspired by Travis CI.
 
-## Compiling
+## Usage
+
+You will need to generate a .hpi file.
 
 ```bash
 # on our artifactory this may require running several times.
 $ mvn package
+```
+
+Next, download jenkins.jar from http://jenkins-ci.org/ and run it:
+
+```bash
+$ java -jar jenkins.war
+```
+
+Copy your new plugin into your dev Jenkins instance:
+
+```bash
+$ cp target/yamlproject.hpi ~/.jenkins/plugins/
 ```
