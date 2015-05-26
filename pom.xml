@@ -16,7 +16,7 @@
   <packaging>hpi</packaging>
 
   <name>YAML Projects</name>
-  <description>TODO</description>
+  <description>Describe projects using a YAML file in the repo itself.</description>
   <licenses>
     <license>
       <name>MIT License</name>
