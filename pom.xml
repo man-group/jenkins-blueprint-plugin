@@ -7,7 +7,7 @@
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
     <!-- Baseline Jenkins version you use to build and test the plugin. Users must have this version or newer to run. -->
-    <version>1.580.1</version>
+    <version>1.498</version>
     <relativePath/>
   </parent>
   <groupId>org.jenkins-ci.plugins</groupId>
@@ -15,9 +15,8 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
-  <name>TODO Plugin</name>
+  <name>YAML Projects</name>
   <description>TODO</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/TODO+Plugin</url>
   <licenses>
     <license>
       <name>MIT License</name>
