@@ -8,12 +8,17 @@ import hudson.model.AbstractProject;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import net.sf.json.JSONObject;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.ServletException;
+
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
 
 /**
  * Build a project according to .jenkins.yml.
@@ -52,7 +57,22 @@ public class YamlBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a build.
-        listener.getLogger().println("Hello, "+name+"!");
+      
+        PrintStream logger = listener.getLogger();
+        logger.println("Hello, "+name+"!");
+
+        logger.println("before 2");
+        
+        String document = "\n- Hesperiidae\n- Papilionidae\n- Apatelodidae\n- Epiplemidae";
+        
+        Yaml yaml = new Yaml();
+        @SuppressWarnings("unchecked")
+            List<String> list = (List<String>) yaml.load(document);
+
+        logger.println("after load");
+        logger.println(list);
+        logger.println("after list");
+
         return true;
     }
 
