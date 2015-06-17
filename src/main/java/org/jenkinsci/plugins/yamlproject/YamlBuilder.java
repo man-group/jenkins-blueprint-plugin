@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.yamlproject;
 import hudson.Launcher;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -44,9 +45,19 @@ public class YamlBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+        // Fetch the YAML file, then build accordingly.
+
+        final FilePath workspace = build.getWorkspace();
+        final FilePath ymlPath = workspace.child(".jenkins.yml");
+
         PrintStream logger = listener.getLogger();
+        if (!ymlPath.exists()) {
+            logger.println("No .jenkins.yml found in" + workspace);
+            return false;
+        } else {
+            logger.println(".jenkins.yml exists!");
+        }
         
         String document = "\n- Hesperiidae\n- Papilionidae\n- Apatelodidae\n- Epiplemidae";
         
