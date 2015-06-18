@@ -1,9 +1,7 @@
-# Jenkins YAML Project
+# Jenkins Recipe Builder
 
-A Jenkins plugin that lets you describe projects using a YAML file in
-the repo itself.
-
-Inspired by Travis CI.
+A Jenkins plugin where the build steps are described by a
+`.jenkins.yml` file in the soruce code. Inspired by Travis CI.
 
 ## Usage
 
@@ -23,5 +21,5 @@ $ java -jar jenkins.war
 Copy your new plugin into your dev Jenkins instance:
 
 ```bash
-$ cp target/yamlproject.hpi ~/.jenkins/plugins/
+$ cp target/recipebuilder.hpi ~/.jenkins/plugins/
 ```

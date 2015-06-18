@@ -3,5 +3,5 @@
   This view is used to render the installed plugins page.
 -->
 <div>
-  Describe projects using a YAML file in the repo itself.
+  Build a project according to .jenkins.yml in the source code.
 </div>

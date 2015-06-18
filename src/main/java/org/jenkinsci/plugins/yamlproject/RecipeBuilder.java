@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.yamlproject;
+package org.jenkinsci.plugins.recipebuilder;
 
 import hudson.EnvVars;
 import hudson.Launcher;
@@ -35,7 +35,7 @@ import java.util.Scanner;
  * <p>
  * When the user configures the project and enables this builder,
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link YamlBuilder} is created. The created
+ * and a new {@link RecipeBuilder} is created. The created
  * instance is persisted to the project configuration XML by using
  * XStream, so this allows you to use instance fields (like {@link #name})
  * to remember the configuration.
@@ -45,11 +45,11 @@ import java.util.Scanner;
  * method will be invoked. 
  *
  */
-public class YamlBuilder extends Builder {
+public class RecipeBuilder extends Builder {
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public YamlBuilder() {
+    public RecipeBuilder() {
     }
 
     @Override
@@ -65,7 +65,7 @@ public class YamlBuilder extends Builder {
             return false;
         }
 
-        String ymlSrc = ymlPath.act(new YamlFileFetcher());
+        String ymlSrc = ymlPath.act(new RecipeFileFetcher());
 
         Yaml yaml = new Yaml();
         Map<String, List<String>> yamlComponents;
@@ -83,6 +83,8 @@ public class YamlBuilder extends Builder {
         }
 
         for (String command: commands) {
+            // TODO: it would be nice to group this into proper styled HTML divs.
+            logger.println("\n");
             RecipeStepRunner runner = new RecipeStepRunner(command, logger);
             if (!runner.perform(build, launcher, listener)) {
                 return false;
@@ -101,11 +103,11 @@ public class YamlBuilder extends Builder {
     }
 
     /**
-     * Descriptor for {@link YamlBuilder}. Used as a singleton.
+     * Descriptor for {@link RecipeBuilder}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *
      * <p>
-     * See <tt>src/main/resources/hudson/plugins/hello_world/YamlBuilder/*.jelly</tt>
+     * See <tt>src/main/resources/hudson/plugins/hello_world/RecipeBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
@@ -132,13 +134,12 @@ public class YamlBuilder extends Builder {
     }
 }
 
-class YamlFileFetcher implements FilePath.FileCallable<String> {
+class RecipeFileFetcher implements FilePath.FileCallable<String> {
     public String invoke(File ws, VirtualChannel channel) throws FileNotFoundException {
         return new Scanner(ws).useDelimiter("\\Z").next();
     }
 }
 
-// TODO: YAML is vague, we should brand everything as 'recipe' instead.
 class RecipeStepRunner extends Builder {
     private final PrintStream logger;
 
