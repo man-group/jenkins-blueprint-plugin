@@ -1,4 +1,5 @@
 package org.jenkinsci.plugins.yamlproject;
+
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
@@ -6,6 +7,7 @@ import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
+import hudson.remoting.VirtualChannel;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import net.sf.json.JSONObject;
@@ -17,9 +19,13 @@ import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.ServletException;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Build a project according to .jenkins.yml.
@@ -55,19 +61,21 @@ public class YamlBuilder extends Builder {
         if (!ymlPath.exists()) {
             logger.println("No .jenkins.yml found in" + workspace);
             return false;
-        } else {
-            logger.println(".jenkins.yml exists!");
         }
-        
-        String document = "\n- Hesperiidae\n- Papilionidae\n- Apatelodidae\n- Epiplemidae";
-        
-        Yaml yaml = new Yaml();
-        @SuppressWarnings("unchecked")
-            List<String> list = (List<String>) yaml.load(document);
 
-        logger.println("after load");
-        logger.println(list);
-        logger.println("after list");
+        String ymlSrc = ymlPath.act(new YamlFileFetcher());
+
+        Yaml yaml = new Yaml();
+        Map<String, List<String>> yamlComponents;
+        try {
+            yamlComponents = (Map<String, List<String>>) yaml.load(ymlSrc);
+        } catch (ClassCastException e) {
+            logger.println("Your .jenkins.yml is invalid, it should have a top-level 'script:'.");
+            return false;
+        }
+
+        logger.println("Parsed YAML:");
+        logger.println(yamlComponents);
 
         return true;
     }
@@ -112,3 +120,8 @@ public class YamlBuilder extends Builder {
     }
 }
 
+class YamlFileFetcher implements FilePath.FileCallable<String> {
+    public String invoke(File ws, VirtualChannel channel) throws FileNotFoundException {
+        return new Scanner(ws).useDelimiter("\\Z").next();
+    }
+}
