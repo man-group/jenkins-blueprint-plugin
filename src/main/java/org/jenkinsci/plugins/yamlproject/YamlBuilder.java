@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.yamlproject;
 
+import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
@@ -10,14 +11,15 @@ import hudson.model.AbstractProject;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
-import net.sf.json.JSONObject;
+import hudson.tasks.Shell;
+import hudson.util.ArgumentListBuilder;
+
+import jenkins.model.Jenkins;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
 import org.yaml.snakeyaml.Yaml;
-
-import javax.servlet.ServletException;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,8 +76,18 @@ public class YamlBuilder extends Builder {
             return false;
         }
 
-        logger.println("Parsed YAML:");
-        logger.println(yamlComponents);
+        List<String> commands = yamlComponents.get("script");
+        if (commands == null) {
+            logger.println("Your .jenkins.yml is invalid, it should have a top-level 'script:'.");
+            return false;
+        }
+
+        for (String command: commands) {
+            RecipeStepRunner runner = new RecipeStepRunner(command, logger);
+            if (!runner.perform(build, launcher, listener)) {
+                return false;
+            }
+        }
 
         return true;
     }
@@ -123,5 +135,43 @@ public class YamlBuilder extends Builder {
 class YamlFileFetcher implements FilePath.FileCallable<String> {
     public String invoke(File ws, VirtualChannel channel) throws FileNotFoundException {
         return new Scanner(ws).useDelimiter("\\Z").next();
+    }
+}
+
+// TODO: YAML is vague, we should brand everything as 'recipe' instead.
+class RecipeStepRunner extends Builder {
+    private final PrintStream logger;
+
+    private final String command;
+    
+    public RecipeStepRunner(String command, PrintStream logger) {
+        this.command = command;
+        this.logger = logger;
+    }
+
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+        ArgumentListBuilder args = new ArgumentListBuilder();        
+        final Shell.DescriptorImpl shellDescriptor = (Shell.DescriptorImpl) Jenkins.getInstance().getDescriptor(Shell.class);
+        final FilePath workingDir = build.getWorkspace();
+        
+        final String interpreter = shellDescriptor.getShellOrDefault(workingDir.getChannel());
+        args.add(interpreter);
+        args.add("-c");
+        args.add(command);
+
+        boolean returnValue;
+        try {
+            EnvVars env = build.getEnvironment(listener);
+            int r = launcher.launch().cmds(args).envs(env).stderr(listener.getLogger()).stdout(listener.getLogger()).pwd(workingDir).join();
+            returnValue = (r == 0);
+        } catch (IOException e) {
+            logger.println("IOException during script execution");
+            returnValue = false;
+        } catch (InterruptedException e) {
+            logger.println("Interrupted during script execution");
+            returnValue = false;
+        }
+
+        return returnValue;
     }
 }
