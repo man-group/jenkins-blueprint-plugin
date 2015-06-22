@@ -4,6 +4,9 @@ import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.MarkupText;
+import hudson.console.ConsoleNote;
+import hudson.console.ConsoleAnnotator;
 import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -83,8 +86,9 @@ public class RecipeBuilder extends Builder {
         }
 
         for (String command: commands) {
-            // TODO: it would be nice to group this into proper styled HTML divs.
-            logger.println("\n");
+            // TODO: it would be nice to group output into divs with borders.
+            listener.annotate(new HeadingNote(command));
+            
             RecipeStepRunner runner = new RecipeStepRunner(command, logger);
             if (!runner.perform(build, launcher, listener)) {
                 return false;
@@ -174,5 +178,19 @@ class RecipeStepRunner extends Builder {
         }
 
         return returnValue;
+    }
+}
+
+class HeadingNote extends ConsoleNote {
+    private final String caption;
+    
+    public HeadingNote(String caption) {
+        this.caption = caption;
+    }
+    
+    @Override
+    public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
+        text.addMarkup(charPos, "<h2>" + caption + "</h2>");
+        return null;
     }
 }
