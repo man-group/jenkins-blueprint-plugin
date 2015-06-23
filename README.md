@@ -1,7 +1,7 @@
 # Jenkins Recipe Builder
 
-A Jenkins plugin where the build steps are described by a
-`.jenkins.yml` file in the soruce code. Inspired by Travis CI.
+Build Jenkins projects according to a `.jenkins.yml` file in the
+repository. Inspired by Travis CI.
 
 ## Usage
 
@@ -23,3 +23,9 @@ Copy your new plugin into your dev Jenkins instance:
 ```bash
 $ cp target/recipebuilder.hpi ~/.jenkins/plugins/
 ```
+
+## Installing
+
+Visit the Plugin Manager in your Jenkins instance
+(e.g. `http://example.com/pluginManager/advanced`) and upload the
+`recipebuilder.hpi` file.
