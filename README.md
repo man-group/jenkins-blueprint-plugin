@@ -3,6 +3,8 @@
 Build Jenkins projects according to a `.jenkins.yml` file in the
 repository. Inspired by Travis CI.
 
+MIT license, see COPYING.
+
 ## Developing
 
 You will need to generate a .hpi file.
