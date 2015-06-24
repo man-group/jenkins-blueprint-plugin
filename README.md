@@ -43,7 +43,7 @@ example, for a Python file, your file might look like this:
 script:
   - python setup.py develop
   - python setup.py test
-  ```
+```
 
 For more elaborate build steps, use a multi-line YAML string:
 
