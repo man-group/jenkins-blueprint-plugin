@@ -57,6 +57,10 @@ script:
     fi
 ```
 
+When your build runs, you will end up with something like this:
+
+![screenshot](screenshot.png)
+
 ## Known Limitations
 
 RecipeBuilder doesn't work with injecting environment variables.
