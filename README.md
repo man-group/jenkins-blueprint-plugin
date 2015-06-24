@@ -37,12 +37,12 @@ Visit the Plugin Manager in your Jenkins instance
 Add a build step to your job 'Build according to .jenkins.yml'.
 
 Then, check in a `.jenkins.yml` file with build instructions. For
-example, for a Python file, your file might look like this:
+example, for a C project, your file might look like this:
 
 ```yaml
 script:
-  - python setup.py develop
-  - python setup.py test
+  - make
+  - make test
 ```
 
 For more elaborate build steps, use a multi-line YAML string:
