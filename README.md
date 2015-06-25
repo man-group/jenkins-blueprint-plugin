@@ -1,4 +1,5 @@
 # Jenkins Recipe Builder
+[![Build Status](https://travis-ci.org/manahl/recipebuilder.svg?branch=master)](https://travis-ci.org/manahl/recipebuilder)
 
 Build Jenkins projects according to a `.jenkins.yml` file in the
 repository. Inspired by Travis CI.
