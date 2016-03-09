@@ -6,6 +6,9 @@ repository. Inspired by Travis CI.
 
 MIT license, see COPYING.
 
+See also
+[the workflow plugin](https://github.com/jenkinsci/workflow-plugin).
+
 ## Developing
 
 You will need to generate a .hpi file.
