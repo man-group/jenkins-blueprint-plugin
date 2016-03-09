@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.recipebuilder;
+package org.jenkinsci.plugins.blueprint;
 
 import hudson.EnvVars;
 import hudson.Launcher;
@@ -38,7 +38,7 @@ import java.util.Scanner;
  * <p>
  * When the user configures the project and enables this builder,
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link RecipeBuilder} is created. The created
+ * and a new {@link BlueprintBuilder} is created. The created
  * instance is persisted to the project configuration XML by using
  * XStream, so this allows you to use instance fields (like {@link #name})
  * to remember the configuration.
@@ -48,11 +48,11 @@ import java.util.Scanner;
  * method will be invoked. 
  *
  */
-public class RecipeBuilder extends Builder {
+public class BlueprintBuilder extends Builder {
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public RecipeBuilder() {
+    public BlueprintBuilder() {
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RecipeBuilder extends Builder {
             return false;
         }
 
-        String ymlSrc = ymlPath.act(new RecipeFileFetcher());
+        String ymlSrc = ymlPath.act(new BlueprintFileFetcher());
 
         Yaml yaml = new Yaml();
         Map<String, List<String>> yamlComponents;
@@ -89,7 +89,7 @@ public class RecipeBuilder extends Builder {
             // TODO: it would be nice to group output into divs with borders.
             listener.annotate(new HeadingNote(command));
             
-            RecipeStepRunner runner = new RecipeStepRunner(command, logger);
+            BlueprintStepRunner runner = new BlueprintStepRunner(command, logger);
             if (!runner.perform(build, launcher, listener)) {
                 return false;
             }
@@ -107,11 +107,11 @@ public class RecipeBuilder extends Builder {
     }
 
     /**
-     * Descriptor for {@link RecipeBuilder}. Used as a singleton.
+     * Descriptor for {@link BlueprintBuilder}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *
      * <p>
-     * See <tt>src/main/resources/hudson/plugins/hello_world/RecipeBuilder/*.jelly</tt>
+     * See <tt>src/main/resources/hudson/plugins/hello_world/BlueprintBuilder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
@@ -138,18 +138,18 @@ public class RecipeBuilder extends Builder {
     }
 }
 
-class RecipeFileFetcher implements FilePath.FileCallable<String> {
+class BlueprintFileFetcher implements FilePath.FileCallable<String> {
     public String invoke(File ws, VirtualChannel channel) throws FileNotFoundException {
         return new Scanner(ws).useDelimiter("\\Z").next();
     }
 }
 
-class RecipeStepRunner extends Builder {
+class BlueprintStepRunner extends Builder {
     private final PrintStream logger;
 
     private final String command;
     
-    public RecipeStepRunner(String command, PrintStream logger) {
+    public BlueprintStepRunner(String command, PrintStream logger) {
         this.command = command;
         this.logger = logger;
     }

@@ -1,5 +1,5 @@
-# Jenkins Recipe Builder
-[![Build Status](https://travis-ci.org/manahl/recipebuilder.svg?branch=master)](https://travis-ci.org/manahl/recipebuilder)
+# Jenkins Blueprint
+[![Build Status](https://travis-ci.org/manahl/jenkins-blueprint-plugin.svg?branch=master)](https://travis-ci.org/manahl/jenkins-blueprint-plugin)
 
 Build Jenkins projects according to a `.jenkins.yml` file in the
 repository. Inspired by Travis CI.
@@ -24,14 +24,14 @@ $ java -jar jenkins.war
 Copy your new plugin into your dev Jenkins instance:
 
 ```bash
-$ cp target/recipebuilder.hpi ~/.jenkins/plugins/
+$ cp target/blueprint.hpi ~/.jenkins/plugins/
 ```
 
 ## Installing
 
 Visit the Plugin Manager in your Jenkins instance
 (e.g. `http://example.com/pluginManager/advanced`) and upload the
-`recipebuilder.hpi` file.
+`blueprint.hpi` file.
 
 ## Usage
 
@@ -64,4 +64,4 @@ When your build runs, you will end up with something like this:
 
 ## Known Limitations
 
-RecipeBuilder doesn't work with injecting environment variables.
+Blueprint doesn't work with injecting environment variables.
